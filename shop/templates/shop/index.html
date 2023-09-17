@@ -2,17 +2,13 @@
 {% block css %}
         .col-md-3 {
             display: inline-block;
-            margin-left: -4px;
+            margin-left: 8px;
         }
 
-        .col-md-3 {
-            width: 100%;
-            height: 200%;
-        }
          
         .card-img-top {
-          width: 97%;
-          height: 57%;}
+          max-width: 97%;
+          max-height: 57%;}
 
 
         body .no-padding {
@@ -34,6 +30,7 @@
         .carousel-control-next, .carousel-control-prev {
           top:auto;
           bottom:auto;
+          padding-top: 213px;
         }
 
 
@@ -44,6 +41,8 @@
         .carousel-indicators .active{
         background-color: blue;
         }
+
+       
 
 
     {% endblock %}
@@ -59,7 +58,8 @@
   {% for product,range, nslides in allProds%}
 
     <h1>{{product.0.category}}</h1>
-    <div id="demo{{forloop.counter}}" class="carousel slide my-3" data-ride="carousel">'
+    <div class="row">
+    <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">'
         <ul class="carousel-indicators">
             <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
     {% for i in range %}
@@ -86,12 +86,12 @@
 
             {% for i in product %}
             <div class="col-xs-3 col-sm-3 col-md-3">
-              <div class="card" style="width: 18rem; height: 25rem;" >
+              <div class="card" style="width: 18rem; height: 25rem;   " >
                 <img src='/media/{{i.image}}' class="card-img-top" height="200px" width="200px" alt="...">
                 <div class="card-body">
                   <h5 class="card-title">{{i.product_name}}</h5>
                   <p class="card-text">{{i.desc}}</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <button id="pr{{i.id}}" class="btn btn-primary cart">Add to cart</button>
                 </div>
               </div>
             </div>
@@ -114,6 +114,51 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+  </div>
   {% endfor %}
 </div>
  {% endblock %}
+
+
+ {% block js%} 
+ 
+ <script>
+
+// cart displaying logic
+
+  if(localStorage.getItem('cart') == null){
+  var cart = {};
+  }
+  else
+  {
+  cart = JSON.parse(localStorage.getItem('cart'));
+  document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  }
+  // jQuery
+  $('.cart').click(function(){
+  console.log('clicked');
+  var idstr = this.id.toString();
+  console.log(idstr);
+  if (cart[idstr] !=undefined){
+  cart[idstr] = cart[idstr] + 1;
+  }
+  else
+  {
+  cart[idstr] = 1;
+  }
+  console.log(cart);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // used to print the cart item in cart
+  document.getElementById('cart').innerHTML = Object.keys(cart).length;
+  });
+  
+
+
+// popover show is tooltip displaying logic
+
+
+  $('#pop').popover()
+  document.getElementById('pop').setAttribute('data-content', '<h5>Cart</h5>')
+  </script>
+  {% endblock %}

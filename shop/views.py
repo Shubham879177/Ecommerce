@@ -5,9 +5,7 @@ from .models import Product
 
 # Create your views here.
 
-def index(request):
-    products = Product.objects.all()
-   
+def index(request):  
     # params={'no_of_slides':nslides, 'range':range(1,nslides), 'product':products}
 
     # allProds = [[products, range(1,nslides), nslides],[products, range(1,nslides), nslides]]
