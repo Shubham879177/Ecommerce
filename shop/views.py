@@ -1,7 +1,7 @@
 from math import ceil
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Product
+from .models import Product,Contact
 
 # Create your views here.
 
@@ -14,34 +14,51 @@ def index(request):
     catProds = Product.objects.values('category','id')
     cats = { item["category"] for item in catProds}
     for cat in cats:
-        prod = Product.objects.filter(category=cat)
-        n= len(prod)
+        product = Product.objects.filter(category=cat)
+        n= len(product)
         nslides = n//4 + ceil ((n/4)-(n//4))
-        allProds.append([prod, range(1,nslides), nslides])
+        allProds.append([product, range(1,nslides), nslides])
     
     params = {"allProds":allProds}
     return render(request , 'shop/index.html',params) 
 
+
+
+
+def prodview(request,name):
+
+    # fetching the product by its id 
+    prod=Product.objects.filter(product_name=name)
+ 
+    return render(request, "shop/prodView.html", {'product':prod[0]})
+
+
 def about(request):
     # return HttpResponse("Hi i am about")
-    return render(request , 'shop/about.html') 
+    return render(request , 'shop/about.html')
 
 def contact(request):
-    return HttpResponse("Hi i am contact")
-    # return render(request , 'shop/index.html') 
+    if request.method =="POST" :
+        name = request.POST.get('name',"")
+        email= request.POST.get('email','')
+        phone = request.POST.get('phone',"")
+        query = request.POST.get('query',"")
+
+        # logic for saving the data in database
+
+        contact = Contact(name=name , email=email, phone=phone, desc=query)
+        contact.save()
+
+    return render(request , 'shop/contact.html') 
 
 def tracker(request):
-    return HttpResponse("Hi i am tracker")
-    # return render(request , 'shop/index.html')
+    # return HttpResponse("Hi i am tracker")
+    return render(request , 'shop/tracker.html')
 
 def search(request):
-    return HttpResponse("Hi i am search")
-    # return render(request , 'shop/index.html')
+    return render(request , 'shop/search.html')
 
-def prodview(request):
-    return HttpResponse("Hi i am productview")
-    # return render(request , 'shop/index.html') 
+  
 
 def checkout(request):
-    return HttpResponse("Hi i am checkout")
-    # return render(request , 'shop/index.html') 
+    return render(request , 'shop/checkout.html')

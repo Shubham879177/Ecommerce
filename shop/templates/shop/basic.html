@@ -19,7 +19,7 @@
 
 <body>
     {% load static %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <h6 class="navbar-brand">My Awesome Cart</h6>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,11 +50,13 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
 
-           <button type="button" class="btn btn-md btn-warning mx-2" id="pop" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Bottom popover">
+           <button type="button" class="btn btn-md btn-outline-warning mx-2" id="pop" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Bottom popover">
                 Cart(<span id="cart">0</span> )
             </button>
         </div>
     </nav>
+    <br>
+    <br>
 
     <!-- Here we add the body of page -->
 
@@ -73,7 +75,55 @@
         integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
 
-    {% block js%} {% endblock%}
+        <script>
+
+            // cartitem displaying logic
+            
+              if(localStorage.getItem('cart') == null){
+              var cart = {};
+              }
+              else
+              {
+              cart = JSON.parse(localStorage.getItem('cart'))
+              var total=0
+              for (var i in cart){
+                total=total+cart[i]
+              }
+              document.getElementById('cart').innerHTML = total;
+              }
+              // jQuery
+              $('.cart').click(function(){
+              console.log('clicked');
+              var idstr = this.id.toString();
+              console.log(idstr);
+              if (cart[idstr] !=undefined){
+              cart[idstr] = cart[idstr] + 1;
+              }
+              else
+              {
+              cart[idstr] = 1;
+              }
+              console.log(cart);
+              localStorage.setItem('cart', JSON.stringify(cart));
+              
+              // used to print the cart item in cart
+              var total=0
+              for (var i in cart){
+                total=total+cart[i]
+              }
+              document.getElementById('cart').innerHTML = total;
+            //   document.getElementById('cart').innerHTML = Object.keys(cart).length;
+              });
+              
+            
+            
+            // popover show is tooltip displaying logic
+            
+            
+              $('#pop').popover()
+              document.getElementById('pop').setAttribute('data-content', '<h5>Cart</h5>')
+              </script>
+              
 </body>
 
 </html>
