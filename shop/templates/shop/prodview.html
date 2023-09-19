@@ -29,8 +29,68 @@
 </div>
 </div>
 
+{% block js %}
 
 
+
+<script>
+
+    // finding the cart item in localStorage
+    
+      if(localStorage.getItem('cart') == null){
+      var cart = {};
+      }
+      else
+      {
+        // loading the cart if cart has products
+
+      cart = JSON.parse(localStorage.getItem('cart'))
+      var total=0
+      for (var i in cart){
+        total=total+cart[i]
+      }
+    //   changine cart innerhtml to its increased value 
+      document.getElementById('cart').innerHTML = total;
+      }
+
+    //   if the addtocart button is clicked , add increase the item 
+      // jQuery
+      $('.cart').click(function(){
+      
+        // taking id of the product 
+      var idstr = this.id.toString();
+      
+
+      if (cart[idstr] !=undefined){
+      cart[idstr] = cart[idstr] + 1;
+      }
+      else
+      {
+      cart[idstr] = 1;
+      }
+    
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      // used to print the cart item in cart
+      var total=0
+      for (var i in cart){
+        total=total+cart[i]
+      }
+      document.getElementById('cart').innerHTML = total;
+    //   document.getElementById('cart').innerHTML = Object.keys(cart).length;
+      });
+      
+    
+    
+    // popover show is tooltip displaying logic
+    
+    
+      $('#pop').popover()
+      document.getElementById('pop').setAttribute('data-content', '<h5>Cart</h5>')
+      </script>
+
+
+{% endblock%}
 
 
 {% endblock %}
