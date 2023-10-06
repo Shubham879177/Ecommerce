@@ -46,4 +46,13 @@ class Order(models.Model):
         return self.name
 
 
+class OrderUpdate(models.Model):
+    update_id = models.AutoField(primary_key=True)
+    order_id = models.IntegerField(default="")
+    update_decs = models.CharField(max_length=5000)
+    timetamp = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+       return self.update_decs[0:7]+ "........"
+
     

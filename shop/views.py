@@ -1,15 +1,12 @@
 from math import ceil
-from django.http import HttpResponse
-from django.shortcuts import render
-from .models import Product,Contact,Order
+from django.shortcuts import render,HttpResponse
+from .models import Product,Contact,Order,OrderUpdate
+import json
 
 # Create your views here.
 
 def index(request):  
-    # params={'no_of_slides':nslides, 'range':range(1,nslides), 'product':products}
 
-    # allProds = [[products, range(1,nslides), nslides],[products, range(1,nslides), nslides]]
-        
     allProds = []
     catProds = Product.objects.values('category','id')
     cats = { item["category"] for item in catProds}
@@ -66,8 +63,12 @@ def checkout(request):
 
         order = Order(name=name , email=email, address=address, phone=phone,city=city, state=state, zip_code=zip_code)
         order.save()
+        update=OrderUpdate(order_id = order.order_id , update_decs =f"Dear {name} Your order is placed")
+        update.save()
+    
         thank =True
         id_ = order.order_id
+
         
     print(id_)
     return render(request , 'shop/checkout.html',{'thank':thank, 'id':id_})
@@ -75,8 +76,34 @@ def checkout(request):
 
 
 def tracker(request):
-    # return HttpResponse("Hi i am tracker")
+    if request.method =="POST" :
+        orderId = request.POST.get('orderId',"")
+        email = request.POST.get('email',"")
+        
+        try:
+            order = Order.objects.filter(order_id=orderId, email= email)
+            if len(order)>0:
+                update = OrderUpdate.objects.filter(order_id=orderId)
+                updates=[]
+
+                for item in update:
+                    updates.append({'text':item.update_decs, 'time':item.timetamp})
+                    responce = json.dumps(updates,default=str)
+                return HttpResponse(responce)
+            else:
+                return HttpResponse({})
+        except Exception as e:
+            return HttpResponse({})
+
+
+
     return render(request , 'shop/tracker.html')
+
+
+
+
+
+
 
 def search(request):
     return render(request , 'shop/search.html')

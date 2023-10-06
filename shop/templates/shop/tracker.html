@@ -1,5 +1,91 @@
 {% extends 'shop/basic.html' %}
 
-{% block title %} Track Us {% endblock %}
+{% block title %} Tracker - My Awesome Cart {% endblock %}
 
-{% block body %} this is Track page {% endblock %}
+{% block body %}
+
+
+<div class="container">
+  <div class="col my-4">
+    <h2> My Awesome Cart Tracker -Track your items Here!</h2>
+    <form action="#" method="post" id="trackerForm">{% csrf_token %}
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="orderId">OrderId</label>
+          <input type="text" class="form-control" id="orderId" name="orderId" placeholder="order id...">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Email...">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-outline-success my-4" style="width: 20%; font-size: 20px;">Track</button>
+    </form>
+
+  </div>
+  <div class="col my-4">
+    <h2>Details of your items</h2>
+    <div>
+      <ul class="list-group" id="item">
+
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+  $("#trackerForm").submit(function (event) {
+
+    $('#item').empty();
+    var formData = {
+      'orderId': $('input[name=orderId]').val(),
+      'email': $('input[id=email]').val(),
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: '/shop/tracker/',
+      data: formData,
+      encode: true
+    })
+      .done(function (data) {
+
+        updates = JSON.parse(data)
+        if (updates.length > 0 & updates != {}) {
+          for (i = 0; i < updates.length; i++) {
+            var desc = updates[i]['text']
+            var time = updates[i]['time']
+
+            mylist = `<li class='list-group-item d-flex justify-content-between align-items-center'>
+                    ${desc}
+                    <span class='badge badge-primary badge-pill'>${time}</span>
+                </li>`
+
+            $('#item').append(mylist);
+          }
+        }
+        else {
+          mylist = `<li class='list-group-item d-flex justify-content-between align-items-center'> Sorry</li>`
+
+          $('#item').append(mylist);
+        }
+      })
+
+    event.preventDefault()
+
+  })
+
+
+
+</script>
+{% endblock %}
