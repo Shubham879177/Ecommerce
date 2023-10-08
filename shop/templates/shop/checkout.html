@@ -19,7 +19,8 @@
     <h2>Step-2 Enter Your Aaddress & Other details</h2>
 
     <form action="/shop/checkout/" method="post">{% csrf_token %}
-      <input type="hidden" name="itemJson" id="itemJson">
+      <input type="hidden" name="items_json" id="items_json">
+      <input type="hidden" name="amount" id="amount">
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="name">Name</label>
@@ -96,15 +97,24 @@
                     <span class='badge badge-primary badge-pill'>${qty}</span>
                 </li>`
 
-      total_price = `<div class="alert alert-primary my-3" role="alert">
-                       Hey Your total price of cart is <b>${count}</b> .please fill all the details below by which we can deliver to you! Thank you Shopping with us.
-                      </div>`
-
+      
 
       $('#item').append(mylist);
-      $('#item').append(total_price)
+      
     }
+    total_price = `<div class="alert alert-primary my-3" role="alert">
+                       Hey Your total price of cart is <b>${count}</b> .please fill all the details below by which we can deliver to you! Thank you Shopping with us.
+                      </div>`
+    $('#item').append(total_price)
+
   }
+
+ 
+  $('#amount').val(count)
+  $('#items_json').val(JSON.stringify(cart));
+  
+
+
   document.getElementById('cart').innerHTML = sum;
 
 
@@ -112,6 +122,7 @@
   $('#itemsJson').val(JSON.stringify(cart));
   {% if thank %}
   alert('Thanks for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker');
+  
   localStorage.clear();
   document.location = "/shop";
   {% endif %}

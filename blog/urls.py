@@ -5,5 +5,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path("",views.index, name="BlogHome"),
-    path("blogpost/",views.blogpost, name="BlogPost")
+    path("blogpost/<int:id>",views.blogpost, name="BlogPost")
 ]
